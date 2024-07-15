@@ -22,6 +22,7 @@ model User {
   salt      String
   settings  UserSettings?
   orders    OrderList?
+  role      RoleVariant
 }
 
 model UserSettings {
@@ -75,4 +76,10 @@ enum OrderStatusVariant {
   InProgress
   Ready
   Done
+}
+
+enum RoleVariant {
+  Admin
+  User
+  Guest
 }
