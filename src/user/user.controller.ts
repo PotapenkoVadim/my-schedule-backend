@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto, UserEntity } from './interfaces';
 import {
@@ -17,9 +18,11 @@ import {
 } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { ENDPOINT_DESCRIPTIONS } from './constants';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('User')
 @Controller('user')
+@UseGuards(AuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

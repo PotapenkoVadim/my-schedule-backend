@@ -56,4 +56,23 @@ export class UserService {
   async deleteUser(id: number): Promise<UserEntity> {
     return this.dataBaseService.user.delete({ where: { id } });
   }
+
+  async findAndValidatePassword(
+    username: string,
+    password: string,
+  ): Promise<UserEntity | null> {
+    const user = await this.getUserByUsername(username);
+
+    if (!user) {
+      return null;
+    }
+
+    const hash = this.passwordService.getHash(password, user.salt);
+
+    if (hash !== user.hash) {
+      return null;
+    }
+
+    return user;
+  }
 }
