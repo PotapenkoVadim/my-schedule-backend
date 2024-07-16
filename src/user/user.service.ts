@@ -25,25 +25,40 @@ export class UserService {
     const hash = this.passwordService.getHash(password, salt);
 
     return this.dataBaseService.user.create({
-      data: { hash, salt, role, username },
+      data: {
+        hash,
+        salt,
+        role,
+        username,
+        settings: {
+          create: { theme: 'Dark' },
+        },
+      },
     });
   }
 
   async getUserById(id: number): Promise<UserEntity | null> {
-    return this.dataBaseService.user.findUnique({ where: { id } });
+    return this.dataBaseService.user.findUnique({
+      where: { id },
+      include: { settings: true },
+    });
   }
 
   async getUserByUsername(username: string): Promise<UserEntity | null> {
-    return this.dataBaseService.user.findUnique({ where: { username } });
+    return this.dataBaseService.user.findUnique({
+      where: { username },
+      include: { settings: true },
+    });
   }
 
   async updateUser(
     id: number,
     { role, username }: UpdateUserDto,
   ): Promise<UserEntity> {
-    const user = await this.getUserByUsername(username);
+    const duplicateUser = await this.getUserByUsername(username);
+    const user = await this.getUserById(id);
 
-    if (!user) {
+    if (duplicateUser || !user) {
       throw new BadRequestException();
     }
 

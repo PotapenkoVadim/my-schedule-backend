@@ -1,5 +1,4 @@
 // TODO: should remove file
-export class UserSettingsEntity {}
 
 export class OrderListEntity {}
 

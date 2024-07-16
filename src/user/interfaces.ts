@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { $Enums } from '@prisma/client';
 import { IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { OrderListEntity, UserSettingsEntity } from './external-interfaces';
+import { OrderListEntity } from './external-interfaces';
+import { UserSettingsEntity } from 'src/user-settings/interfaces';
 
 export class UserEntity {
   @ApiProperty()
