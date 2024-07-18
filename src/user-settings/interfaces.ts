@@ -1,22 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { $Enums } from '@prisma/client';
 import { IsIn } from 'class-validator';
+import { BaseEntity } from 'src/interfaces';
 
-export class UserSettingsEntity {
-  @ApiProperty()
-  id: number;
-
+export class UserSettingsEntity extends BaseEntity {
   @ApiProperty({ enum: [$Enums.ThemeVariant.Dark, $Enums.ThemeVariant.Light] })
   theme: $Enums.ThemeVariant;
 
   @ApiProperty()
   ownerId: number;
-
-  @ApiProperty()
-  createdAt: Date;
-
-  @ApiProperty()
-  updatedAt: Date;
 }
 
 export class UpdateUserSettingsDto {

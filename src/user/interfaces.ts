@@ -1,19 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { $Enums } from '@prisma/client';
 import { IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { OrderListEntity } from './external-interfaces';
+import { BaseEntity } from 'src/interfaces';
+import { OrderListEntity } from 'src/order-list/interfaces';
 import { UserSettingsEntity } from 'src/user-settings/interfaces';
 
-export class UserEntity {
-  @ApiProperty()
-  id: number;
-
-  @ApiProperty()
-  createdAt: Date;
-
-  @ApiProperty()
-  updatedAt: Date;
-
+export class UserEntity extends BaseEntity {
   @ApiProperty()
   username: string;
 

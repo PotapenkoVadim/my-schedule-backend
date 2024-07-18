@@ -6,6 +6,10 @@ import { UpdateUserSettingsDto, UserSettingsEntity } from './interfaces';
 export class UserSettingsService {
   constructor(private readonly dataBaseService: DataBaseService) {}
 
+  async getUserSettings(): Promise<Array<UserSettingsEntity>> {
+    return this.dataBaseService.userSettings.findMany();
+  }
+
   async getUserSettingsById(id: number): Promise<UserSettingsEntity | null> {
     return this.dataBaseService.userSettings.findUnique({ where: { id } });
   }

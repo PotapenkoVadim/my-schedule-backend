@@ -16,6 +16,13 @@ import { ENDPOINT_DESCRIPTIONS } from './constants';
 export class UserSettingsController {
   constructor(private readonly userSettingsService: UserSettingsService) {}
 
+  @Get()
+  @ApiOkResponse({ type: [UserSettingsEntity] })
+  @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getUserSettings })
+  async getUserSettings(): Promise<Array<UserSettingsEntity>> {
+    return this.userSettingsService.getUserSettings();
+  }
+
   @Get(':id')
   @ApiOkResponse({ type: UserSettingsEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getUserSettingById })

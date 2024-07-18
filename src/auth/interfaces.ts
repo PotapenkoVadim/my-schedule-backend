@@ -12,3 +12,9 @@ export class SignInDto {
   @IsNotEmpty()
   password: string;
 }
+
+export class Session {
+  id: number;
+  role: string;
+  username: string;
+}

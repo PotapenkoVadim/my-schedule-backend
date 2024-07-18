@@ -33,6 +33,13 @@ export class UserController {
     return this.userService.createUser(userDto);
   }
 
+  @Get()
+  @ApiCreatedResponse({ type: [UserEntity] })
+  @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getUsers })
+  async getUsers(): Promise<Array<UserEntity>> {
+    return this.userService.getUsers();
+  }
+
   @Get(':id')
   @ApiOkResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getUserById })

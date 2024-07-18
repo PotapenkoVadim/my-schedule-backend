@@ -33,14 +33,21 @@ export class UserService {
         settings: {
           create: { theme: 'Dark' },
         },
+        orders: {
+          create: { items: {} },
+        },
       },
     });
+  }
+
+  async getUsers(): Promise<Array<UserEntity>> {
+    return this.dataBaseService.user.findMany();
   }
 
   async getUserById(id: number): Promise<UserEntity | null> {
     return this.dataBaseService.user.findUnique({
       where: { id },
-      include: { settings: true },
+      include: { settings: true, orders: true },
     });
   }
 
