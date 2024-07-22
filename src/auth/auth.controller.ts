@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -43,6 +51,8 @@ export class AuthController {
   ) {
     const token = await this.authService.signIn(singInDto);
     this.cookieService.setToken(response, token);
+
+    return { status: HttpStatus.OK };
   }
 
   @Get('sign-out')
@@ -51,5 +61,7 @@ export class AuthController {
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.signOut })
   async signOut(@Res({ passthrough: true }) response: Response) {
     this.cookieService.removeToken(response);
+
+    return { status: HttpStatus.OK };
   }
 }
