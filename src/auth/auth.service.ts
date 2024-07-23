@@ -25,7 +25,10 @@ export class AuthService {
     return { user, token: accessToken };
   }
 
-  async signIn({ username, password }: SignInDto): Promise<string> {
+  async signIn({
+    username,
+    password,
+  }: SignInDto): Promise<{ user: UserEntity; token: string }> {
     const user = await this.userService.findAndValidatePassword(
       username,
       password,
@@ -41,6 +44,10 @@ export class AuthService {
       username: user.username,
     });
 
-    return accessToken;
+    return { token: accessToken, user };
+  }
+
+  async session(userId: number): Promise<UserEntity> {
+    return this.userService.getUserById(userId);
   }
 }

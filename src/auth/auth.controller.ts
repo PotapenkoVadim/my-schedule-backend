@@ -14,12 +14,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ENDPOINT_DESCRIPTIONS } from './constants';
-import { SignInDto } from './interfaces';
+import { Session, SignInDto } from './interfaces';
 import { AuthService } from './auth.service';
 import { CookieService } from './cookie.service';
 import { Response } from 'express';
 import { AuthGuard } from './auth.guard';
 import { CreateUserDto, UserEntity } from 'src/user/interfaces';
+import { SessionDecorator } from './session.decorator';
 
 @ApiTags('Authentication')
 @Controller()
@@ -43,16 +44,16 @@ export class AuthController {
   }
 
   @Post('sign-in')
-  @ApiOkResponse()
+  @ApiOkResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.signIn })
   async signIn(
     @Body() singInDto: SignInDto,
     @Res({ passthrough: true }) response: Response,
-  ) {
-    const token = await this.authService.signIn(singInDto);
+  ): Promise<UserEntity> {
+    const { token, user } = await this.authService.signIn(singInDto);
     this.cookieService.setToken(response, token);
 
-    return { status: HttpStatus.OK };
+    return user;
   }
 
   @Get('sign-out')
@@ -63,5 +64,13 @@ export class AuthController {
     this.cookieService.removeToken(response);
 
     return { status: HttpStatus.OK };
+  }
+
+  @Get('session')
+  @UseGuards(AuthGuard)
+  @ApiOkResponse({ type: UserEntity })
+  @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.session })
+  async session(@SessionDecorator() session: Session): Promise<UserEntity> {
+    return this.authService.session(session.id);
   }
 }
