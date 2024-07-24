@@ -64,7 +64,13 @@ export class OrderListService {
               ...orderData,
               details: {
                 deleteMany: {},
-                create: details,
+                createMany: {
+                  data: details.map((item) => ({
+                    count: item.count,
+                    description: item.description,
+                    sum: item.sum,
+                  })),
+                },
               },
             },
           },
