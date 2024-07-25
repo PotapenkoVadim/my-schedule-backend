@@ -63,7 +63,16 @@ export class UserService {
   async getUserByUsername(username: string): Promise<UserEntity | null> {
     return this.dataBaseService.user.findUnique({
       where: { username },
-      include: { settings: true },
+      include: {
+        settings: true,
+        orders: {
+          include: {
+            items: {
+              include: { details: true },
+            },
+          },
+        },
+      },
     });
   }
 
