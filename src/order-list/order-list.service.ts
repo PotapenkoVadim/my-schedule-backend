@@ -1,21 +1,35 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DataBaseService } from 'src/data-base/data-base.service';
 import { CreateOrderDto, OrderListEntity, UpdateOrderDto } from './interfaces';
+import { getExpiredYears } from './utils';
 
 @Injectable()
 export class OrderListService {
   constructor(private readonly dataBaseService: DataBaseService) {}
 
-  async getOrderLists(): Promise<Array<OrderListEntity>> {
+  async getOrderLists(currentYear: number): Promise<Array<OrderListEntity>> {
     return this.dataBaseService.orderList.findMany({
-      include: { items: { include: { details: true } } },
+      include: {
+        items: {
+          include: { details: true },
+          where: { expiredYears: { hasSome: [currentYear] } },
+        },
+      },
     });
   }
 
-  async getOrderListById(id: number): Promise<OrderListEntity> {
+  async getOrderListById(
+    id: number,
+    currentYear: number,
+  ): Promise<OrderListEntity> {
     return this.dataBaseService.orderList.findUnique({
       where: { id },
-      include: { items: { include: { details: true } } },
+      include: {
+        items: {
+          include: { details: true },
+          where: { expiredYears: { hasSome: [currentYear] } },
+        },
+      },
     });
   }
 
@@ -25,7 +39,7 @@ export class OrderListService {
 
   async addOrderListItem(
     ownerId: number,
-    { details, ...orderData }: CreateOrderDto,
+    { details, currentYear, ...orderData }: CreateOrderDto,
   ): Promise<OrderListEntity> {
     return this.dataBaseService.orderList.update({
       where: { ownerId },
@@ -33,18 +47,24 @@ export class OrderListService {
         items: {
           create: {
             ...orderData,
+            expiredYears: getExpiredYears(orderData.deadline),
             details: { create: details },
           },
         },
       },
-      include: { items: { include: { details: true } } },
+      include: {
+        items: {
+          include: { details: true },
+          where: { expiredYears: { hasSome: [currentYear] } },
+        },
+      },
     });
   }
 
   async updateOrderListItem(
     ownerId: number,
     itemId: number,
-    { details, ...orderData }: UpdateOrderDto,
+    { details, currentYear, ...orderData }: UpdateOrderDto,
   ): Promise<OrderListEntity> {
     const order = await this.dataBaseService.order.findUnique({
       where: { id: itemId },
@@ -62,6 +82,7 @@ export class OrderListService {
             where: { id: itemId },
             data: {
               ...orderData,
+              expiredYears: getExpiredYears(orderData.deadline),
               details: {
                 deleteMany: {},
                 createMany: {
@@ -76,13 +97,19 @@ export class OrderListService {
           },
         },
       },
-      include: { items: { include: { details: true } } },
+      include: {
+        items: {
+          include: { details: true },
+          where: { expiredYears: { hasSome: [currentYear] } },
+        },
+      },
     });
   }
 
   async deleteOrderListItem(
     ownerId: number,
     itemId: number,
+    currentYear: number,
   ): Promise<OrderListEntity> {
     const order = await this.dataBaseService.order.findUnique({
       where: { id: itemId },
@@ -99,7 +126,12 @@ export class OrderListService {
           delete: { id: itemId },
         },
       },
-      include: { items: { include: { details: true } } },
+      include: {
+        items: {
+          include: { details: true },
+          where: { expiredYears: { hasSome: [currentYear] } },
+        },
+      },
     });
   }
 }

@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto, UserEntity } from './interfaces';
@@ -45,8 +46,9 @@ export class UserController {
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getUserById })
   async getUserById(
     @Param('id', ParseIntPipe) id: number,
+    @Query('currentYear', ParseIntPipe) currentYear: number,
   ): Promise<UserEntity | null> {
-    return this.userService.getUserById(id);
+    return this.userService.getUserById(id, currentYear);
   }
 
   @Patch(':id')

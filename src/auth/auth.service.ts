@@ -47,7 +47,7 @@ export class AuthService {
     return { token: accessToken, user };
   }
 
-  async session(userId: number): Promise<UserEntity> {
-    return this.userService.getUserById(userId);
+  async session(userId: number, currentYear: number): Promise<UserEntity> {
+    return this.userService.getUserById(userId, currentYear);
   }
 }

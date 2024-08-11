@@ -6,6 +6,7 @@ import {
   IsArray,
   IsIn,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
@@ -17,13 +18,13 @@ export class OrderDetailsEntity {
   id: number;
 
   @ApiProperty()
-  count: string;
+  count: number;
 
   @ApiProperty()
   description: string;
 
   @ApiProperty()
-  sum: string;
+  sum: number;
 
   @ApiProperty()
   orderId: number;
@@ -40,7 +41,7 @@ export class OrderEntity extends BaseEntity {
   photoSet: string;
 
   @ApiProperty()
-  deadline: Array<string>;
+  deadline: Array<Date>;
 
   @ApiProperty({ required: false })
   comment?: string;
@@ -80,7 +81,7 @@ export class CreateOrderDto {
   @ApiProperty()
   @IsArray()
   @IsNotEmpty()
-  deadline: Array<string>;
+  deadline: Array<Date>;
 
   @ApiProperty({ required: false })
   @IsString()
@@ -107,9 +108,17 @@ export class CreateOrderDto {
   @ValidateNested({ each: true })
   @Type(() => OrderDetailsEntity)
   details: Array<OrderDetailsEntity>;
+
+  @ApiProperty()
+  @IsNumber()
+  currentYear: number;
 }
 
-export class UpdateOrderDto extends PartialType(OrderEntity) {}
+export class UpdateOrderDto extends PartialType(OrderEntity) {
+  @ApiProperty()
+  @IsNumber()
+  currentYear: number;
+}
 
 export class OrderListEntity extends BaseEntity {
   @ApiProperty({ type: [OrderEntity] })
