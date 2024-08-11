@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -32,7 +33,7 @@ export class OrderListController {
   @ApiOkResponse({ type: [OrderListEntity] })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getOrderLists })
   async getOrderLists(): Promise<Array<OrderListEntity>> {
-    return this.orderListService.getOrderLists();
+    return this.orderListService.getOrderLists(2024);
   }
 
   @Get(':id')
@@ -40,8 +41,9 @@ export class OrderListController {
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getOrderListById })
   async getOrderListById(
     @Param('id', ParseIntPipe) id: number,
+    @Query('currentYear', ParseIntPipe) currentYear: number,
   ): Promise<OrderListEntity> {
-    return this.orderListService.getOrderListById(id);
+    return this.orderListService.getOrderListById(id, currentYear);
   }
 
   @Post('item')
@@ -71,7 +73,12 @@ export class OrderListController {
   async deleteOrderListItem(
     @Param('id', ParseIntPipe) id: number,
     @SessionDecorator() session: Session,
+    @Query('currentYear', ParseIntPipe) currentYear: number,
   ): Promise<OrderListEntity> {
-    return this.orderListService.deleteOrderListItem(session.id, id);
+    return this.orderListService.deleteOrderListItem(
+      session.id,
+      id,
+      currentYear,
+    );
   }
 }

@@ -15,7 +15,8 @@ export class UserService {
     role,
     username,
   }: CreateUserDto): Promise<UserEntity> {
-    const user = await this.getUserByUsername(username);
+    const currentYear = new Date().getFullYear();
+    const user = await this.getUserByUsername(username, currentYear);
 
     if (user) {
       throw new BadRequestException({ type: 'user-exists' });
@@ -30,12 +31,8 @@ export class UserService {
         salt,
         role,
         username,
-        settings: {
-          create: { theme: 'Dark' },
-        },
-        orders: {
-          create: { items: {} },
-        },
+        settings: { create: { theme: 'Dark' } },
+        orders: { create: { items: {} } },
       },
     });
   }
@@ -44,7 +41,10 @@ export class UserService {
     return this.dataBaseService.user.findMany();
   }
 
-  async getUserById(id: number): Promise<UserEntity | null> {
+  async getUserById(
+    id: number,
+    currentYear: number,
+  ): Promise<UserEntity | null> {
     return this.dataBaseService.user.findUnique({
       where: { id },
       include: {
@@ -53,6 +53,7 @@ export class UserService {
           include: {
             items: {
               include: { details: true },
+              where: { expiredYears: { hasSome: [currentYear] } },
             },
           },
         },
@@ -60,7 +61,10 @@ export class UserService {
     });
   }
 
-  async getUserByUsername(username: string): Promise<UserEntity | null> {
+  async getUserByUsername(
+    username: string,
+    currentYear: number,
+  ): Promise<UserEntity | null> {
     return this.dataBaseService.user.findUnique({
       where: { username },
       include: {
@@ -69,6 +73,7 @@ export class UserService {
           include: {
             items: {
               include: { details: true },
+              where: { expiredYears: { hasSome: [currentYear] } },
             },
           },
         },
@@ -80,8 +85,9 @@ export class UserService {
     id: number,
     { role, username }: UpdateUserDto,
   ): Promise<UserEntity> {
-    const duplicateUser = await this.getUserByUsername(username);
-    const user = await this.getUserById(id);
+    const currentYear = new Date().getFullYear();
+    const duplicateUser = await this.getUserByUsername(username, currentYear);
+    const user = await this.getUserById(id, currentYear);
 
     if (duplicateUser || !user) {
       throw new BadRequestException();
@@ -101,7 +107,8 @@ export class UserService {
     username: string,
     password: string,
   ): Promise<UserEntity | null> {
-    const user = await this.getUserByUsername(username);
+    const currentYear = new Date().getFullYear();
+    const user = await this.getUserByUsername(username, currentYear);
 
     if (!user) {
       return null;

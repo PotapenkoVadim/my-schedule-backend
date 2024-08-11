@@ -44,27 +44,28 @@ model OrderList {
 }
 
 model Order {
-  id          Int       @id @default(autoincrement())
-  orderListId Int
-  orderList   OrderList @relation(fields: [orderListId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  color       String
-  customer    String
-  photoSet    String
-  deadline    String[]
-  comment     String?
-  status      OrderStatusVariant
-  details     OrderDetails[]
+  id           Int       @id @default(autoincrement())
+  orderListId  Int
+  orderList    OrderList @relation(fields: [orderListId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  color        String
+  customer     String
+  photoSet     String
+  deadline     DateTime[]
+  comment      String?
+  status       OrderStatusVariant
+  details      OrderDetails[]
+  expiredYears Int[]
 }
 
 model OrderDetails {
   id          Int   @id @default(autoincrement())
   orderId     Int
   order       Order @relation(fields: [orderId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  count       String
+  count       Int
   description String
-  sum         String
+  sum         Int
 }
 
 enum ThemeVariant {

@@ -3,7 +3,9 @@ import {
   Controller,
   Get,
   HttpStatus,
+  ParseIntPipe,
   Post,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -70,7 +72,10 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @ApiOkResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.session })
-  async session(@SessionDecorator() session: Session): Promise<UserEntity> {
-    return this.authService.session(session.id);
+  async session(
+    @SessionDecorator() session: Session,
+    @Query('currentYear', ParseIntPipe) currentYear: number,
+  ): Promise<UserEntity> {
+    return this.authService.session(session.id, currentYear);
   }
 }
