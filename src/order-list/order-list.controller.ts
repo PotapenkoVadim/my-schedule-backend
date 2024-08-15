@@ -32,8 +32,10 @@ export class OrderListController {
   @Get()
   @ApiOkResponse({ type: [OrderListEntity] })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getOrderLists })
-  async getOrderLists(): Promise<Array<OrderListEntity>> {
-    return this.orderListService.getOrderLists(2024);
+  async getOrderLists(
+    @Query('currentYear', ParseIntPipe) currentYear: number,
+  ): Promise<Array<OrderListEntity>> {
+    return this.orderListService.getOrderLists(currentYear);
   }
 
   @Get(':id')

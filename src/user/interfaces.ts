@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { $Enums } from '@prisma/client';
+import { Exclude } from 'class-transformer';
 import { IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { BaseEntity } from 'src/interfaces';
 import { OrderListEntity } from 'src/order-list/interfaces';
@@ -9,10 +10,10 @@ export class UserEntity extends BaseEntity {
   @ApiProperty()
   username: string;
 
-  @ApiProperty()
+  @Exclude({ toPlainOnly: true })
   hash: string;
 
-  @ApiProperty()
+  @Exclude({ toPlainOnly: true })
   salt: string;
 
   @ApiProperty({ type: UserSettingsEntity, required: false })

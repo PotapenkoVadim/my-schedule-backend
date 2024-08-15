@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { $Enums } from '@prisma/client';
-import { Type } from 'class-transformer';
+import { Exclude, Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -60,6 +60,9 @@ export class OrderEntity extends BaseEntity {
 
   @ApiProperty()
   orderListId: number;
+
+  @Exclude({ toPlainOnly: true })
+  expiredYears: Array<number>;
 }
 
 export class CreateOrderDto {
