@@ -23,6 +23,8 @@ import { Response } from 'express';
 import { AuthGuard } from './auth.guard';
 import { CreateUserDto, UserEntity } from 'src/user/interfaces';
 import { SessionDecorator } from './session.decorator';
+import { RoleGuard, Roles } from './role.guard';
+import { $Enums } from '@prisma/client';
 
 @ApiTags('Authentication')
 @Controller()
@@ -33,6 +35,8 @@ export class AuthController {
   ) {}
 
   @Post('sign-up')
+  @Roles([$Enums.RoleVariant.Admin])
+  @UseGuards(AuthGuard, RoleGuard)
   @ApiCreatedResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.signUp })
   async signUp(
@@ -59,7 +63,12 @@ export class AuthController {
   }
 
   @Get('sign-out')
-  @UseGuards(AuthGuard)
+  @Roles([
+    $Enums.RoleVariant.User,
+    $Enums.RoleVariant.Admin,
+    $Enums.RoleVariant.Guest,
+  ])
+  @UseGuards(AuthGuard, RoleGuard)
   @ApiOkResponse()
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.signOut })
   async signOut(@Res({ passthrough: true }) response: Response) {
@@ -69,7 +78,12 @@ export class AuthController {
   }
 
   @Get('session')
-  @UseGuards(AuthGuard)
+  @Roles([
+    $Enums.RoleVariant.User,
+    $Enums.RoleVariant.Admin,
+    $Enums.RoleVariant.Guest,
+  ])
+  @UseGuards(AuthGuard, RoleGuard)
   @ApiOkResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.session })
   async session(
