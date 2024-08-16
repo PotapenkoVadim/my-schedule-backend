@@ -20,14 +20,17 @@ import {
 import { UserService } from './user.service';
 import { ENDPOINT_DESCRIPTIONS } from './constants';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { RoleGuard, Roles } from 'src/auth/role.guard';
+import { $Enums } from '@prisma/client';
 
 @ApiTags('User')
 @Controller('user')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RoleGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @Roles([$Enums.RoleVariant.Admin])
   @ApiCreatedResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.createUser })
   async createUser(@Body() userDto: CreateUserDto): Promise<UserEntity> {
@@ -35,6 +38,7 @@ export class UserController {
   }
 
   @Get()
+  @Roles([$Enums.RoleVariant.Admin])
   @ApiCreatedResponse({ type: [UserEntity] })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getUsers })
   async getUsers(): Promise<Array<UserEntity>> {
@@ -42,6 +46,11 @@ export class UserController {
   }
 
   @Get(':id')
+  @Roles([
+    $Enums.RoleVariant.User,
+    $Enums.RoleVariant.Admin,
+    $Enums.RoleVariant.Guest,
+  ])
   @ApiOkResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getUserById })
   async getUserById(
@@ -52,6 +61,11 @@ export class UserController {
   }
 
   @Patch(':id')
+  @Roles([
+    $Enums.RoleVariant.User,
+    $Enums.RoleVariant.Admin,
+    $Enums.RoleVariant.Guest,
+  ])
   @ApiOkResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.updateUser })
   async updateUser(
@@ -62,6 +76,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @Roles([$Enums.RoleVariant.Admin])
   @ApiOkResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.deleteUser })
   async deleteUser(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {

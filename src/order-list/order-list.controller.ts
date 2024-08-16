@@ -22,14 +22,21 @@ import { OrderListService } from './order-list.service';
 import { ENDPOINT_DESCRIPTIONS } from './constants';
 import { Session } from 'src/auth/interfaces';
 import { SessionDecorator } from 'src/auth/session.decorator';
+import { RoleGuard, Roles } from 'src/auth/role.guard';
+import { $Enums } from '@prisma/client';
 
 @ApiTags('Order List')
 @Controller('order-list')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RoleGuard)
 export class OrderListController {
   constructor(private readonly orderListService: OrderListService) {}
 
   @Get()
+  @Roles([
+    $Enums.RoleVariant.User,
+    $Enums.RoleVariant.Admin,
+    $Enums.RoleVariant.Guest,
+  ])
   @ApiOkResponse({ type: [OrderListEntity] })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getOrderLists })
   async getOrderLists(
@@ -39,6 +46,11 @@ export class OrderListController {
   }
 
   @Get(':id')
+  @Roles([
+    $Enums.RoleVariant.User,
+    $Enums.RoleVariant.Admin,
+    $Enums.RoleVariant.Guest,
+  ])
   @ApiOkResponse({ type: OrderListEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getOrderListById })
   async getOrderListById(
@@ -49,6 +61,7 @@ export class OrderListController {
   }
 
   @Post('item')
+  @Roles([$Enums.RoleVariant.User, $Enums.RoleVariant.Admin])
   @ApiCreatedResponse({ type: OrderListEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.addOrderListItem })
   async addOrderListItem(
@@ -59,6 +72,7 @@ export class OrderListController {
   }
 
   @Patch('item/:id')
+  @Roles([$Enums.RoleVariant.User, $Enums.RoleVariant.Admin])
   @ApiOkResponse({ type: OrderListEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.updateOrderListItem })
   async updateOrderListItem(
@@ -70,6 +84,7 @@ export class OrderListController {
   }
 
   @Delete('item/:id')
+  @Roles([$Enums.RoleVariant.User, $Enums.RoleVariant.Admin])
   @ApiOkResponse({ type: OrderListEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.deleteOrderListItem })
   async deleteOrderListItem(
