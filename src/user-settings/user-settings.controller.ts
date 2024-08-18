@@ -5,14 +5,24 @@ import {
   Param,
   ParseIntPipe,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserSettingsService } from './user-settings.service';
 import { UpdateUserSettingsDto, UserSettingsEntity } from './interfaces';
 import { ENDPOINT_DESCRIPTIONS } from './constants';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { RoleGuard, Roles } from 'src/auth/role.guard';
+import { $Enums } from '@prisma/client';
 
 @ApiTags('User Settings')
 @Controller('user-settings')
+@UseGuards(AuthGuard, RoleGuard)
+@Roles([
+  $Enums.RoleVariant.User,
+  $Enums.RoleVariant.Admin,
+  $Enums.RoleVariant.Guest,
+])
 export class UserSettingsController {
   constructor(private readonly userSettingsService: UserSettingsService) {}
 
