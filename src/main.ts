@@ -26,7 +26,11 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
-    origin: ['http://localhost:3000', configService.get('CLIENT_HOST')],
+    origin: [
+      'https://tauri.localhost',
+      'http://localhost:3000',
+      configService.get('CLIENT_HOST'),
+    ],
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true,
   });
