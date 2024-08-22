@@ -18,3 +18,8 @@ export class Session {
   role: string;
   username: string;
 }
+
+export class TokenResponse {
+  @ApiProperty()
+  token: string;
+}
