@@ -28,7 +28,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'https://tauri.localhost',
-      'http://localhost:3000',
+      'http://localhost:3000/',
       configService.get('CLIENT_HOST'),
     ],
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],

@@ -2,11 +2,9 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus,
   ParseIntPipe,
   Post,
   Query,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -16,10 +14,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ENDPOINT_DESCRIPTIONS } from './constants';
-import { Session, SignInDto } from './interfaces';
+import { Session, SignInDto, TokenResponse } from './interfaces';
 import { AuthService } from './auth.service';
-import { CookieService } from './cookie.service';
-import { Response } from 'express';
 import { AuthGuard } from './auth.guard';
 import { CreateUserDto, UserEntity } from 'src/user/interfaces';
 import { SessionDecorator } from './session.decorator';
@@ -29,52 +25,22 @@ import { $Enums } from '@prisma/client';
 @ApiTags('Authentication')
 @Controller()
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly cookieService: CookieService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('sign-up')
   @Roles([$Enums.RoleVariant.Admin])
   @UseGuards(AuthGuard, RoleGuard)
-  @ApiCreatedResponse({ type: UserEntity })
+  @ApiCreatedResponse({ type: TokenResponse })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.signUp })
-  async signUp(
-    @Body() userDto: CreateUserDto,
-    @Res({ passthrough: true }) response: Response,
-  ): Promise<UserEntity> {
-    const { user, token } = await this.authService.signUp(userDto);
-    this.cookieService.setToken(response, token);
-
-    return user;
+  async signUp(@Body() userDto: CreateUserDto): Promise<TokenResponse> {
+    return this.authService.signUp(userDto);
   }
 
   @Post('sign-in')
-  @ApiOkResponse({ type: UserEntity })
+  @ApiOkResponse({ type: TokenResponse })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.signIn })
-  async signIn(
-    @Body() singInDto: SignInDto,
-    @Res({ passthrough: true }) response: Response,
-  ): Promise<UserEntity> {
-    const { token, user } = await this.authService.signIn(singInDto);
-    this.cookieService.setToken(response, token);
-
-    return user;
-  }
-
-  @Get('sign-out')
-  @Roles([
-    $Enums.RoleVariant.User,
-    $Enums.RoleVariant.Admin,
-    $Enums.RoleVariant.Guest,
-  ])
-  @UseGuards(AuthGuard, RoleGuard)
-  @ApiOkResponse()
-  @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.signOut })
-  async signOut(@Res({ passthrough: true }) response: Response) {
-    this.cookieService.removeToken(response);
-
-    return { status: HttpStatus.OK };
+  async signIn(@Body() singInDto: SignInDto): Promise<TokenResponse> {
+    return this.authService.signIn(singInDto);
   }
 
   @Get('session')
