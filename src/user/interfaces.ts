@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { $Enums } from '@prisma/client';
 import { Exclude } from 'class-transformer';
-import { IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsIn, IsNotEmpty, IsString } from 'class-validator';
 import { BaseEntity } from 'src/interfaces';
 import { OrderListEntity } from 'src/order-list/interfaces';
 import { UserSettingsEntity } from 'src/user-settings/interfaces';
@@ -32,7 +32,7 @@ export class UserEntity extends BaseEntity {
   role: $Enums.RoleVariant;
 }
 
-export class CreateUserDto {
+export class UserDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -56,28 +56,4 @@ export class CreateUserDto {
     $Enums.RoleVariant.User,
   ])
   role: $Enums.RoleVariant;
-}
-
-export class UpdateUserDto {
-  @ApiProperty({ required: false })
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
-  username?: string;
-
-  @ApiProperty({
-    required: false,
-    enum: [
-      $Enums.RoleVariant.Admin,
-      $Enums.RoleVariant.Guest,
-      $Enums.RoleVariant.User,
-    ],
-  })
-  @IsIn([
-    $Enums.RoleVariant.Admin,
-    $Enums.RoleVariant.Guest,
-    $Enums.RoleVariant.User,
-  ])
-  @IsOptional()
-  role?: $Enums.RoleVariant;
 }

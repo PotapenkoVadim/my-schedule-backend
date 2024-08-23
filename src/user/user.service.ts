@@ -1,6 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { DataBaseService } from 'src/data-base/data-base.service';
-import { CreateUserDto, UpdateUserDto, UserEntity } from './interfaces';
+import { UserDto, UserEntity } from './interfaces';
 import { PasswordService } from './password.service';
 import { SignInDto } from 'src/auth/interfaces';
 import { generateRandomString } from 'src/utils';
@@ -13,11 +17,7 @@ export class UserService {
     private readonly passwordService: PasswordService,
   ) {}
 
-  async createUser({
-    password,
-    role,
-    username,
-  }: CreateUserDto): Promise<UserEntity> {
+  async createUser({ password, role, username }: UserDto): Promise<UserEntity> {
     const currentYear = new Date().getFullYear();
     const user = await this.getUserByUsername(username, currentYear);
 
@@ -86,19 +86,21 @@ export class UserService {
 
   async updateUser(
     id: number,
-    { role, username }: UpdateUserDto,
+    { role, username, password }: UserDto,
   ): Promise<UserEntity> {
     const currentYear = new Date().getFullYear();
-    const duplicateUser = await this.getUserByUsername(username, currentYear);
     const user = await this.getUserById(id, currentYear);
 
-    if (duplicateUser || !user) {
+    if (!user) {
       throw new BadRequestException();
     }
 
+    const salt = this.passwordService.getSalt();
+    const hash = this.passwordService.getHash(password, salt);
+
     return this.dataBaseService.user.update({
       where: { id },
-      data: { role, username },
+      data: { role, username, hash, salt },
     });
   }
 
@@ -114,13 +116,13 @@ export class UserService {
     const user = await this.getUserByUsername(username, currentYear);
 
     if (!user) {
-      return null;
+      throw new UnauthorizedException();
     }
 
     const hash = this.passwordService.getHash(password, user.salt);
 
     if (hash !== user.hash) {
-      return null;
+      throw new UnauthorizedException();
     }
 
     return user;
