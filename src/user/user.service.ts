@@ -2,6 +2,9 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { DataBaseService } from 'src/data-base/data-base.service';
 import { CreateUserDto, UpdateUserDto, UserEntity } from './interfaces';
 import { PasswordService } from './password.service';
+import { SignInDto } from 'src/auth/interfaces';
+import { generateRandomString } from 'src/utils';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class UserService {
@@ -31,7 +34,7 @@ export class UserService {
         salt,
         role,
         username,
-        settings: { create: { theme: 'Dark' } },
+        settings: { create: { theme: 'Light' } },
         orders: { create: { items: {} } },
       },
     });
@@ -121,5 +124,27 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async generateGuest(): Promise<SignInDto> {
+    const username = generateRandomString();
+    const password = generateRandomString();
+
+    await this.createUser({ username, password, role: 'Guest' });
+
+    return { username, password };
+  }
+
+  @Cron('0 0 * * *')
+  async deleteGeneratedGuest(): Promise<void> {
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+
+    await this.dataBaseService.user.deleteMany({
+      where: {
+        createdAt: { lte: date },
+        role: 'Guest',
+      },
+    });
   }
 }
