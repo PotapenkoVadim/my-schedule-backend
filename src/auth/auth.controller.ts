@@ -17,7 +17,7 @@ import { ENDPOINT_DESCRIPTIONS } from './constants';
 import { Session, SignInDto, TokenResponse } from './interfaces';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
-import { CreateUserDto, UserEntity } from 'src/user/interfaces';
+import { UserDto, UserEntity } from 'src/user/interfaces';
 import { SessionDecorator } from './session.decorator';
 import { RoleGuard, Roles } from './role.guard';
 import { $Enums } from '@prisma/client';
@@ -27,20 +27,20 @@ import { $Enums } from '@prisma/client';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('sign-up')
-  @Roles([$Enums.RoleVariant.Admin])
-  @UseGuards(AuthGuard, RoleGuard)
-  @ApiCreatedResponse({ type: TokenResponse })
-  @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.signUp })
-  async signUp(@Body() userDto: CreateUserDto): Promise<TokenResponse> {
-    return this.authService.signUp(userDto);
-  }
-
   @Post('sign-in')
   @ApiOkResponse({ type: TokenResponse })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.signIn })
   async signIn(@Body() singInDto: SignInDto): Promise<TokenResponse> {
     return this.authService.signIn(singInDto);
+  }
+
+  @Post('sign-up')
+  @Roles([$Enums.RoleVariant.Admin])
+  @UseGuards(AuthGuard, RoleGuard)
+  @ApiCreatedResponse({ type: TokenResponse })
+  @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.signUp })
+  async signUp(@Body() userDto: UserDto): Promise<TokenResponse> {
+    return this.authService.signUp(userDto);
   }
 
   @Get('session')

@@ -10,7 +10,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto, UserEntity } from './interfaces';
+import { UserDto, UserEntity } from './interfaces';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -34,7 +34,7 @@ export class UserController {
   @UseGuards(AuthGuard, RoleGuard)
   @ApiCreatedResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.createUser })
-  async createUser(@Body() userDto: CreateUserDto): Promise<UserEntity> {
+  async createUser(@Body() userDto: UserDto): Promise<UserEntity> {
     return this.userService.createUser(userDto);
   }
 
@@ -81,7 +81,7 @@ export class UserController {
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.updateUser })
   async updateUser(
     @Param('id', ParseIntPipe) id: number,
-    @Body() userDto: UpdateUserDto,
+    @Body() userDto: UserDto,
   ): Promise<UserEntity> {
     return this.userService.updateUser(id, userDto);
   }
