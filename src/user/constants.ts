@@ -4,4 +4,5 @@ export const ENDPOINT_DESCRIPTIONS = {
   getUserById: 'Получить пользователя по ID',
   updateUser: 'Обновить пользователя',
   deleteUser: 'Удалить пользователя',
+  generateGuest: 'Сгенерировать временного пользователя',
 };

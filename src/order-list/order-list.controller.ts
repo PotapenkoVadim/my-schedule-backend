@@ -32,11 +32,7 @@ export class OrderListController {
   constructor(private readonly orderListService: OrderListService) {}
 
   @Get()
-  @Roles([
-    $Enums.RoleVariant.User,
-    $Enums.RoleVariant.Admin,
-    $Enums.RoleVariant.Guest,
-  ])
+  @Roles([$Enums.RoleVariant.User, $Enums.RoleVariant.Guest])
   @ApiOkResponse({ type: [OrderListEntity] })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getOrderLists })
   async getOrderLists(
@@ -46,11 +42,7 @@ export class OrderListController {
   }
 
   @Get(':id')
-  @Roles([
-    $Enums.RoleVariant.User,
-    $Enums.RoleVariant.Admin,
-    $Enums.RoleVariant.Guest,
-  ])
+  @Roles([$Enums.RoleVariant.User, $Enums.RoleVariant.Guest])
   @ApiOkResponse({ type: OrderListEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getOrderListById })
   async getOrderListById(
@@ -61,7 +53,7 @@ export class OrderListController {
   }
 
   @Post('item')
-  @Roles([$Enums.RoleVariant.User, $Enums.RoleVariant.Admin])
+  @Roles([$Enums.RoleVariant.User, $Enums.RoleVariant.Guest])
   @ApiCreatedResponse({ type: OrderListEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.addOrderListItem })
   async addOrderListItem(
@@ -72,7 +64,7 @@ export class OrderListController {
   }
 
   @Patch('item/:id')
-  @Roles([$Enums.RoleVariant.User, $Enums.RoleVariant.Admin])
+  @Roles([$Enums.RoleVariant.User, $Enums.RoleVariant.Guest])
   @ApiOkResponse({ type: OrderListEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.updateOrderListItem })
   async updateOrderListItem(
@@ -84,7 +76,7 @@ export class OrderListController {
   }
 
   @Delete('item/:id')
-  @Roles([$Enums.RoleVariant.User, $Enums.RoleVariant.Admin])
+  @Roles([$Enums.RoleVariant.User, $Enums.RoleVariant.Guest])
   @ApiOkResponse({ type: OrderListEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.deleteOrderListItem })
   async deleteOrderListItem(

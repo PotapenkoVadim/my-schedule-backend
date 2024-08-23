@@ -22,15 +22,16 @@ import { ENDPOINT_DESCRIPTIONS } from './constants';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RoleGuard, Roles } from 'src/auth/role.guard';
 import { $Enums } from '@prisma/client';
+import { SignInDto } from 'src/auth/interfaces';
 
 @ApiTags('User')
 @Controller('user')
-@UseGuards(AuthGuard, RoleGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
   @Roles([$Enums.RoleVariant.Admin])
+  @UseGuards(AuthGuard, RoleGuard)
   @ApiCreatedResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.createUser })
   async createUser(@Body() userDto: CreateUserDto): Promise<UserEntity> {
@@ -39,10 +40,18 @@ export class UserController {
 
   @Get()
   @Roles([$Enums.RoleVariant.Admin])
+  @UseGuards(AuthGuard, RoleGuard)
   @ApiCreatedResponse({ type: [UserEntity] })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getUsers })
   async getUsers(): Promise<Array<UserEntity>> {
     return this.userService.getUsers();
+  }
+
+  @Get('generate')
+  @ApiOkResponse({ type: SignInDto })
+  @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.generateGuest })
+  async generateGuest(): Promise<SignInDto> {
+    return this.userService.generateGuest();
   }
 
   @Get(':id')
@@ -51,6 +60,7 @@ export class UserController {
     $Enums.RoleVariant.Admin,
     $Enums.RoleVariant.Guest,
   ])
+  @UseGuards(AuthGuard, RoleGuard)
   @ApiOkResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.getUserById })
   async getUserById(
@@ -66,6 +76,7 @@ export class UserController {
     $Enums.RoleVariant.Admin,
     $Enums.RoleVariant.Guest,
   ])
+  @UseGuards(AuthGuard, RoleGuard)
   @ApiOkResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.updateUser })
   async updateUser(
@@ -77,6 +88,7 @@ export class UserController {
 
   @Delete(':id')
   @Roles([$Enums.RoleVariant.Admin])
+  @UseGuards(AuthGuard, RoleGuard)
   @ApiOkResponse({ type: UserEntity })
   @ApiOperation({ summary: ENDPOINT_DESCRIPTIONS.deleteUser })
   async deleteUser(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {

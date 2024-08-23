@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DataBaseService } from 'src/data-base/data-base.service';
 import { CreateOrderDto, OrderListEntity, UpdateOrderDto } from './interfaces';
-import { getExpiredYears } from './utils';
+import { getExpiredYears } from '../utils';
 
 @Injectable()
 export class OrderListService {
