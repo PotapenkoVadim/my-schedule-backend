@@ -48,7 +48,7 @@ export class UserService {
     id: number,
     currentYear: number,
   ): Promise<UserEntity | null> {
-    return this.dataBaseService.user.findUnique({
+    const user = await this.dataBaseService.user.findUnique({
       where: { id },
       include: {
         settings: true,
@@ -62,6 +62,12 @@ export class UserService {
         },
       },
     });
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return user;
   }
 
   async getUserByUsername(
