@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserSettingsModule } from './user-settings/user-settings.module';
 import { OrderListModule } from './order-list/order-list.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { TelegramBotModule } from './telegram-bot/telegram-bot.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     AuthModule,
     UserSettingsModule,
     OrderListModule,
+    TelegramBotModule,
   ],
 })
 export class AppModule {}
