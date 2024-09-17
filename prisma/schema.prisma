@@ -14,15 +14,16 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  username  String   @unique
-  hash      String
-  salt      String
-  settings  UserSettings?
-  orders    OrderList?
-  role      RoleVariant
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  username   String   @unique
+  hash       String
+  salt       String
+  settings   UserSettings?
+  orders     OrderList?
+  role       RoleVariant
+  telegram   String?
 }
 
 model UserSettings {

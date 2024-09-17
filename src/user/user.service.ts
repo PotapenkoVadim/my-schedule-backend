@@ -92,7 +92,7 @@ export class UserService {
 
   async updateUser(
     id: number,
-    { role, username, password }: UserDto,
+    { password, ...userDto }: UserDto,
   ): Promise<UserEntity> {
     const currentYear = new Date().getFullYear();
     const user = await this.getUserById(id, currentYear);
@@ -106,7 +106,7 @@ export class UserService {
 
     return this.dataBaseService.user.update({
       where: { id },
-      data: { role, username, hash, salt },
+      data: { ...userDto, hash, salt },
     });
   }
 
