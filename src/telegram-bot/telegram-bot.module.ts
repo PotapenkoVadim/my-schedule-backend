@@ -4,6 +4,9 @@ import { TelegrafModule } from 'nestjs-telegraf';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TelegramBotCommand } from './telegram-bot.command';
 import { FileSystemsService } from './file-system.service';
+import { UserService } from 'src/user/user.service';
+import { DataBaseService } from 'src/data-base/data-base.service';
+import { PasswordService } from 'src/user/password.service';
 
 @Module({
   imports: [
@@ -15,6 +18,13 @@ import { FileSystemsService } from './file-system.service';
       inject: [ConfigService],
     }),
   ],
-  providers: [TelegramBotService, TelegramBotCommand, FileSystemsService],
+  providers: [
+    TelegramBotService,
+    TelegramBotCommand,
+    FileSystemsService,
+    UserService,
+    DataBaseService,
+    PasswordService,
+  ],
 })
 export class TelegramBotModule {}

@@ -30,6 +30,9 @@ export class UserEntity extends BaseEntity {
     ],
   })
   role: $Enums.RoleVariant;
+
+  @ApiProperty()
+  telegram?: string;
 }
 
 export class UserDto {
@@ -56,4 +59,8 @@ export class UserDto {
     $Enums.RoleVariant.User,
   ])
   role: $Enums.RoleVariant;
+
+  @ApiProperty()
+  @IsString()
+  telegram?: string;
 }
