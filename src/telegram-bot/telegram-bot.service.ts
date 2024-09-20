@@ -50,6 +50,11 @@ export class TelegramBotService {
   getDatabaseBackupFile() {
     const filePath = this.configService.get('DATABASE_BACKUP_PATH');
     const backupFile = this.fileSystemService.getStreamableFile(filePath);
+
+    if (!backupFile) {
+      return null;
+    }
+
     const currentDate = new Date().toISOString().split('T')[0];
     const filename = `${currentDate}-backup.sql`;
 

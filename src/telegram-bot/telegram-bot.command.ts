@@ -7,6 +7,7 @@ import {
   BACKUP_PROVIDE_TEXT,
   FORBIDDEN_TEXT,
   NO_ID_ERROR_TEXT,
+  UNKNOWN_ERROR_TEXT,
 } from './constants';
 import { UseGuards } from '@nestjs/common';
 import { TgUserGuard } from './tg-user.guard';
@@ -33,9 +34,15 @@ export class TelegramBotCommand {
   async sendBackupFileToAdmin() {
     const adminId = this.telegramBotService.adminId;
     const backup = this.telegramBotService.getDatabaseBackupFile();
+    if (!backup) {
+      return await this.telegramBot.telegram.sendMessage(
+        adminId,
+        UNKNOWN_ERROR_TEXT,
+      );
+    }
 
-    await this.telegramBot.telegram.sendMessage(adminId, BACKUP_PROVIDE_TEXT);
     await this.telegramBot.telegram.sendDocument(adminId, backup);
+    await this.telegramBot.telegram.sendMessage(adminId, BACKUP_PROVIDE_TEXT);
   }
 
   @Roles([$Enums.RoleVariant.Admin])
