@@ -143,6 +143,12 @@ export class UserService {
     return { username, password };
   }
 
+  async getUsersByTelegram(telegram: string): Promise<Array<UserEntity>> {
+    return this.dataBaseService.user.findMany({
+      where: { telegram }
+    });
+  }
+
   @Cron('0 0 * * *')
   async deleteGeneratedGuest(): Promise<void> {
     const date = new Date();

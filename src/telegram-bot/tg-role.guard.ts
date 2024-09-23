@@ -13,10 +13,10 @@ export class TgRoleGuard implements CanActivate {
     private readonly telegramBotService: TelegramBotService,
   ) {}
 
-  matchRoles(roles: Array<$Enums.RoleVariant>, userId: number) {
-    const userRole = this.telegramBotService.getUserRole(userId);
+  async matchRoles(roles: Array<$Enums.RoleVariant>, context: TelegramContext) {
+    const userRoles = await this.telegramBotService.getTelegramUserRoles(context);
 
-    return roles.some((role) => role === userRole);
+    return roles.some((role) => userRoles.includes(role));
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -28,9 +28,7 @@ export class TgRoleGuard implements CanActivate {
     if (!allowedRoles) return true;
 
     const telegramCtx = context.getArgs()[0] as TelegramContext;
-    const userId = telegramCtx.from.id;
-
-    const isAllowed = this.matchRoles(allowedRoles, userId);
+    const isAllowed = await this.matchRoles(allowedRoles, telegramCtx);
 
     if (!isAllowed) {
       await telegramCtx.reply(FORBIDDEN_TEXT);
