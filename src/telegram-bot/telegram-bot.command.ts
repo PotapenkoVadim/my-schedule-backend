@@ -10,13 +10,12 @@ import {
   UNKNOWN_ERROR_TEXT,
 } from './constants';
 import { UseGuards } from '@nestjs/common';
-import { TgUserGuard } from './tg-user.guard';
 import { TgRoleGuard } from './tg-role.guard';
 import { Roles } from 'src/auth/role.guard';
 import { $Enums } from '@prisma/client';
 
 @Update()
-@UseGuards(TgUserGuard, TgRoleGuard)
+@UseGuards(TgRoleGuard)
 export class TelegramBotCommand {
   constructor(
     private readonly telegramBotService: TelegramBotService,
@@ -32,7 +31,7 @@ export class TelegramBotCommand {
 
   @Cron('0 0 * * 0')
   async sendBackupFileToAdmin() {
-    const adminId = this.telegramBotService.adminId;
+    const adminId = this.telegramBotService.mainAdminId;
     const backup = this.telegramBotService.getDatabaseBackupFile();
     if (!backup) {
       return await this.telegramBot.telegram.sendMessage(
@@ -71,7 +70,7 @@ export class TelegramBotCommand {
     switch (true) {
       case lowerMessage.includes('бекап'):
       case lowerMessage.includes('backup'): {
-        if (this.telegramBotService.isAdmin(ctx.from.id)) {
+        if (this.telegramBotService.isAdmin(ctx)) {
           this.sendBackupFileToAdmin();
           break;
         }
@@ -79,7 +78,7 @@ export class TelegramBotCommand {
 
       case lowerMessage.includes('delete'):
       case lowerMessage.includes('удали'): {
-        if (this.telegramBotService.isAdmin(ctx.from.id)) {
+        if (this.telegramBotService.isAdmin(ctx)) {
           const id = lowerMessage.split(' ')[1];
           this.deleteUser(ctx, id);
           break;
@@ -88,7 +87,7 @@ export class TelegramBotCommand {
 
       case lowerMessage.includes('список'):
       case lowerMessage.includes('list'): {
-        if (this.telegramBotService.isAdmin(ctx.from.id)) {
+        if (this.telegramBotService.isAdmin(ctx)) {
           this.sendUserList(ctx);
           break;
         }
