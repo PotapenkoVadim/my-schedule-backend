@@ -145,7 +145,7 @@ export class UserService {
 
   async getUsersByTelegram(telegram: string): Promise<Array<UserEntity>> {
     return this.dataBaseService.user.findMany({
-      where: { telegram }
+      where: { telegram },
     });
   }
 

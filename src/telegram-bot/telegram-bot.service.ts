@@ -77,9 +77,11 @@ export class TelegramBotService {
     }
   }
 
-  async getTelegramUserRoles(ctx: TelegramContext): Promise<Array<$Enums.RoleVariant>> {
+  async getTelegramUserRoles(
+    ctx: TelegramContext,
+  ): Promise<Array<$Enums.RoleVariant>> {
     const users = await this.userService.getUsersByTelegram(ctx.from.username);
 
-    return users.map(item => item.role);
+    return users.map((item) => item.role);
   }
 }

@@ -14,7 +14,8 @@ export class TgRoleGuard implements CanActivate {
   ) {}
 
   async matchRoles(roles: Array<$Enums.RoleVariant>, context: TelegramContext) {
-    const userRoles = await this.telegramBotService.getTelegramUserRoles(context);
+    const userRoles =
+      await this.telegramBotService.getTelegramUserRoles(context);
 
     return roles.some((role) => userRoles.includes(role));
   }
