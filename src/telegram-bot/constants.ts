@@ -11,3 +11,6 @@ export const FORBIDDEN_TEXT =
 export const UNKNOWN_ERROR_TEXT =
   'Произошла ошибка! Не удалось корректно выполнить команду!';
 export const NO_ID_ERROR_TEXT = 'Вы некорректно указали ID.';
+export const BACKUP_ADMIN_COMMANDS = ['бекап', 'backup'];
+export const DELETE_ADMIN_COMMANDS = ['delete', 'удали'];
+export const LIST_ADMIN_COMMANDS = ['список', 'list'];
