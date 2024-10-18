@@ -4,8 +4,11 @@ import { TelegramBotService } from './telegram-bot.service';
 import { Cron } from '@nestjs/schedule';
 import { Telegraf } from 'telegraf';
 import {
+  BACKUP_ADMIN_COMMANDS,
   BACKUP_PROVIDE_TEXT,
+  DELETE_ADMIN_COMMANDS,
   FORBIDDEN_TEXT,
+  LIST_ADMIN_COMMANDS,
   NO_ID_ERROR_TEXT,
   UNKNOWN_ERROR_TEXT,
 } from './constants';
@@ -68,16 +71,14 @@ export class TelegramBotCommand {
     const lowerMessage = message.toLocaleLowerCase();
 
     switch (true) {
-      case lowerMessage.includes('бекап'):
-      case lowerMessage.includes('backup'): {
+      case BACKUP_ADMIN_COMMANDS.includes(lowerMessage): {
         if (this.telegramBotService.isAdmin(ctx)) {
           this.sendBackupFileToAdmin();
           break;
         }
       }
 
-      case lowerMessage.includes('delete'):
-      case lowerMessage.includes('удали'): {
+      case DELETE_ADMIN_COMMANDS.includes(lowerMessage): {
         if (this.telegramBotService.isAdmin(ctx)) {
           const id = lowerMessage.split(' ')[1];
           this.deleteUser(ctx, id);
@@ -85,8 +86,7 @@ export class TelegramBotCommand {
         }
       }
 
-      case lowerMessage.includes('список'):
-      case lowerMessage.includes('list'): {
+      case LIST_ADMIN_COMMANDS.includes(lowerMessage): {
         if (this.telegramBotService.isAdmin(ctx)) {
           this.sendUserList(ctx);
           break;
